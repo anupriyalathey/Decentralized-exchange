@@ -1,7 +1,7 @@
 const express = require("express"); //imports express.js
 const Moralis = require("moralis").default; //import moralis library
 const app = express(); //creates an instance of the express application
-const cors = require("cors"); //imports Cross-origin resource sharing middleware(allows server to be accessed from different domains)
+const cors = require("cors"); //imports Cross-  origin resource sharing middleware(allows server to be accessed from different domains)
 require("dotenv").config(); //loads env variables
 const port = 3001; //port on which server will listen for incoming requests
 
