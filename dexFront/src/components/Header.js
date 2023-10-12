@@ -2,7 +2,11 @@ import React from 'react'
 import A from "../A.jpeg"
 import Eth from "../eth.svg"
 import { Link } from "react-router-dom";
-function Header() {
+import { useConnect } from 'wagmi'
+
+function Header(props) {
+  const {address, isConnected, connect} = props;
+
   return (
     <header>
       <div className='leftH'>
@@ -17,8 +21,10 @@ function Header() {
         <div className='headerItem'><img src={Eth} alt="eth" className='eth'/>
         Ethereum
         </div>
-        <div className='connectButton'>Connect</div>
-      </div> 
+        <div className='connectButton' onClick={connect}>         
+          {isConnected ? (address.slice(0,4) +"..." +address.slice(38)) : "Connect"}
+        </div> 
+      </div>
     </header> 
   )
 }
