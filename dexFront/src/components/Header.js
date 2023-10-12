@@ -2,7 +2,6 @@ import React from 'react'
 import A from "../A.jpeg"
 import Eth from "../eth.svg"
 import { Link } from "react-router-dom";
-import { useConnect } from 'wagmi'
 
 function Header(props) {
   const {address, isConnected, connect} = props;
