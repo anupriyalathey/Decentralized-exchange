@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react'
-import {Input, Popover, Radio, Modal} from 'antd'
+import {Input, Popover, Radio, Modal, message} from 'antd'
 import {
   ArrowDownOutlined,
   DownOutlined,
@@ -7,11 +7,12 @@ import {
 } from '@ant-design/icons';
 import tokenList from '../tokenList.json'
 import axios from 'axios'
-import {useSendTransaction, usewaitTransaction} from "wagmi"
+import {useSendTransaction, useWaitForTransaction} from "wagmi"
 
 
 function Swap(props) {
   const {address, isConnected} = props;
+  const [messageApi, contextHolder] = message.useMessage();
   const[slippage, setSlippage] = useState(2.5);
   const[tokenOneAmount, setTokenOneAmount] = useState(null);
   const[tokenTwoAmount, setTokenTwoAmount] = useState(null);
@@ -33,6 +34,10 @@ const {data, sendTransaction} = useSendTransaction({
     data: String(txDetails.data),
     value: String(txDetails.value),
   }
+})
+
+const{isLoading, isSuccess} = useWaitForTransaction({
+  hash: data?.hash,
 })
 
   function handleSlippageChange(e) {
@@ -118,6 +123,35 @@ const {data, sendTransaction} = useSendTransaction({
       sendTransaction(); // wagmi hook
     }
   }, [txDetails])
+
+  useEffect(()=> {
+    messageApi.destroy(); // if any previous message exists, destroy it
+    if(isLoading) {
+      messageApi.open({
+        type: 'loading',
+        content: 'Transaction is pending...',
+        duration: 0,
+      })
+    }
+  },[isLoading])
+
+  useEffect(()=> {
+    messageApi.destroy(); // if any previous message exists, destroy it
+    if(isSuccess) {
+      messageApi.open({
+        type: 'success',
+        content: 'Transaction successful!',
+        duration: 1.5,
+      })
+      }
+      else if(txDetails.to) {
+        messageApi.open({
+          type: 'error',
+          content: 'Transaction failed!',
+          duration: 1.5,
+        })
+      }
+  },[isSuccess])
   
   const settings = (
     <>
@@ -133,6 +167,7 @@ const {data, sendTransaction} = useSendTransaction({
   )
     return (
       <> 
+      {contextHolder}
     <Modal 
       open={isOpen}
       footer={null}
